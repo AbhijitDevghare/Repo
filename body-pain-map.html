@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Pain Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Global Reset & Base */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      font-family: 'Inter', "Segoe UI", sans-serif;
+      background: radial-gradient(circle at center, #ffffff 0%, #eef0f5 100%);
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+    }
+
+    *, *::before, *::after {
+      box-sizing: inherit;
+    }
+
+    .pain-map-section {
+      width: 100%;
+      padding: 40px 20px;
+      opacity: 0;
+      animation: fadeSlideIn 0.8s ease forwards;
+      perspective: 1000px;
+    }
+
+    .pain-map-section .anatomy-container {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+      max-width: 600px;
+      margin: 0 auto;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    }
+
+    .pain-map-section .anatomy-container:hover {
+      transform: translateY(-8px);
+      box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    }
+
+    .voltiva-pain-map {
+      --pain-fill: rgba(239, 68, 68, 0.4);
+      --pain-stroke: rgba(239, 68, 68, 0.9);
+      --pain-glow-strong: rgba(239, 68, 68, 0.6);
+      --pain-glow-soft: rgba(239, 68, 68, 0.25);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(226, 232, 240, 0.8);
+      --card-shadow: rgba(15, 23, 42, 0.12);
+      --card-text-main: #0f172a;
+      --card-text-sub: #475569;
+      position: relative;
+      width: 100%;
+      margin: auto;
+    }
+
+    .voltiva-pain-map .map {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 927 / 1152;
+      line-height: 0;
+    }
+
+    .voltiva-pain-map .map img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      /* Subtle drop shadow on the anatomy body to make it pop */
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+    }
+
+    .voltiva-pain-map .map img,
+    .voltiva-pain-map .map svg {
+      transform: translateY(0) scale(0.98);
+      transform-origin: center center;
+      animation: bodyFloat 6s ease-in-out infinite;
+    }
+
+    .voltiva-pain-map .map svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      z-index: 2;
+    }
+
+    .voltiva-pain-map .region {
+      cursor: pointer;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .voltiva-pain-map .region > * {
+      fill: rgba(239, 68, 68, 0);
+      stroke: rgba(239, 68, 68, 0);
+      stroke-width: 2.5;
+      pointer-events: all;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .voltiva-pain-map .region:hover > *,
+    .voltiva-pain-map .region:focus-visible > *,
+    .voltiva-pain-map .region.active > * {
+      fill: var(--pain-fill);
+      stroke: var(--pain-stroke);
+      filter:
+        drop-shadow(0 0 10px var(--pain-glow-strong))
+        drop-shadow(0 0 25px var(--pain-glow-soft));
+    }
+
+    .voltiva-pain-map .region:hover > *,
+    .voltiva-pain-map .region.active > * {
+      animation: painPulse 1.5s ease-in-out infinite;
+    }
+
+    /* Enhanced Tooltip Card */
+    .voltiva-pain-map .info-card {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: min(320px, calc(100vw - 40px));
+      padding: 16px 20px;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 16px 32px var(--card-shadow), 0 0 0 1px rgba(255,255,255,0.5) inset;
+      color: var(--card-text-main);
+      opacity: 0;
+      transform: translateY(12px) scale(0.95);
+      transition: left 0.3s cubic-bezier(0.2, 0, 0, 1), top 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.25s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: left, top, opacity, transform;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .voltiva-pain-map .info-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ef4444, #f97316);
+      border-radius: 16px 16px 0 0;
+    }
+
+    .voltiva-pain-map .info-card.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .voltiva-pain-map .info-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .voltiva-pain-map .info-badge {
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .voltiva-pain-map .info-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--card-text-main);
+      letter-spacing: -0.2px;
+    }
+
+    .voltiva-pain-map .info-desc {
+      margin: 0 0 10px 0;
+      line-height: 1.5;
+      font-size: 13px;
+      color: var(--card-text-sub);
+    }
+
+    .voltiva-pain-map .info-reason {
+      margin: 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      line-height: 1.4;
+      font-size: 12px;
+      font-weight: 500;
+      color: #64748b;
+    }
+
+    .voltiva-pain-map .info-reason strong {
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bodyFloat {
+      0%, 100% {
+        transform: translateY(0) scale(0.98);
+      }
+      50% {
+        transform: translateY(-8px) scale(0.98);
+      }
+    }
+
+    @keyframes painPulse {
+      0%, 100% {
+        filter:
+          drop-shadow(0 0 8px rgba(239, 68, 68, 0.4))
+          drop-shadow(0 0 16px rgba(239, 68, 68, 0.2));
+      }
+      50% {
+        filter:
+          drop-shadow(0 0 16px rgba(239, 68, 68, 0.7))
+          drop-shadow(0 0 28px rgba(239, 68, 68, 0.35));
+      }
+    }
+  </style>
+</head>
+<body>
+
+<section class="pain-map-section">
+  <div class="anatomy-container">
+    <section class="voltiva-pain-map">
+      <div class="map">
+        <img src="anatomy.png" alt="Human Anatomy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Anterior_muscles_of_the_human_body.jpg/500px-Anterior_muscles_of_the_human_body.jpg'" />
+
+        <svg viewBox="0 0 927 1152" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g class="region" data-area="neck" tabindex="0">
+            <ellipse cx="463.5" cy="215" rx="48" ry="60" />
+          </g>
+
+          <g class="region" data-area="shoulder" tabindex="0">
+            <ellipse cx="297" cy="333" rx="86" ry="76" />
+            <ellipse cx="630" cy="333" rx="86" ry="76" />
+          </g>
+
+          <g class="region" data-area="upper-arm" tabindex="0">
+            <ellipse cx="264" cy="437" rx="50" ry="98" transform="rotate(14 264 437)" />
+            <ellipse cx="663" cy="437" rx="50" ry="98" transform="rotate(-14 663 437)" />
+          </g>
+
+          <g class="region" data-area="chest" tabindex="0">
+            <path d="M334 292C363 272 409 262 463 262C517 262 563 272 592 292C613 322 617 367 604 410C583 448 538 471 463 477C388 471 343 448 322 410C309 367 313 322 334 292Z" />
+          </g>
+
+          <g class="region" data-area="upper-back" tabindex="0">
+            <path d="M332 322C302 354 297 399 318 438C345 433 362 409 366 369C367 347 356 331 332 322Z" />
+            <path d="M595 322C625 354 630 399 609 438C582 433 565 409 561 369C560 347 571 331 595 322Z" />
+          </g>
+
+          <g class="region" data-area="lower-back" tabindex="0">
+            <path d="M356 474C323 521 320 575 346 627C380 620 401 584 407 539C410 509 390 485 356 474Z" />
+            <path d="M571 474C604 521 607 575 581 627C547 620 526 584 520 539C517 509 537 485 571 474Z" />
+          </g>
+
+          <g class="region" data-area="thigh" tabindex="0">
+            <ellipse cx="379" cy="705" rx="88" ry="170" />
+            <ellipse cx="548" cy="705" rx="88" ry="170" />
+          </g>
+
+          <g class="region" data-area="knee" tabindex="0">
+            <ellipse cx="379" cy="804" rx="55" ry="46" />
+            <ellipse cx="548" cy="804" rx="55" ry="46" />
+          </g>
+
+          <g class="region" data-area="calf" tabindex="0">
+            <ellipse cx="369" cy="939" rx="62" ry="154" />
+            <ellipse cx="558" cy="939" rx="62" ry="154" />
+          </g>
+        </svg>
+      </div>
+
+      <div class="info-card" role="status" aria-live="polite" aria-hidden="true">
+        <div class="info-header">
+          <h3 class="info-title"></h3>
+          <span class="info-badge">Pain Zone</span>
+        </div>
+        <p class="info-desc"></p>
+        <p class="info-reason"></p>
+      </div>
+    </section>
+  </div>
+</section>
+
+<script>
+  (function initVoltivaPainMap() {
+    const areaInfo = {
+      neck: {
+        name: "Neck",
+        desc: "Supports head movement and stabilizes the cervical spine.",
+        reason: "Common reason: prolonged forward-head posture and long screen sessions."
+      },
+      shoulder: {
+        name: "Shoulder",
+        desc: "Drives arm lifting and rotation through the deltoid and rotator cuff region.",
+        reason: "Common reason: repetitive overhead movement or strain during lifting."
+      },
+      "upper-arm": {
+        name: "Upper Arm",
+        desc: "Mainly includes the biceps and triceps for elbow flexion and extension.",
+        reason: "Common reason: muscle overuse from workouts, carrying weight, or sudden pulls."
+      },
+      chest: {
+        name: "Chest",
+        desc: "Pectoral muscles assist pushing movements and shoulder stability.",
+        reason: "Common reason: chest muscle strain, tightness, or poor training form."
+      },
+      "upper-back": {
+        name: "Upper Back",
+        desc: "Supports shoulder blades and helps maintain upright posture.",
+        reason: "Common reason: rounded posture, stress tension, and static desk work."
+      },
+      "lower-back": {
+        name: "Lower Back",
+        desc: "Supports spinal load transfer during standing, bending, and lifting.",
+        reason: "Common reason: weak core support, poor lifting mechanics, or prolonged sitting."
+      },
+      thigh: {
+        name: "Thigh",
+        desc: "Quadriceps and adductor groups power walking, climbing, and hip-knee control.",
+        reason: "Common reason: overtraining, tight muscles, or sudden high-intensity movement."
+      },
+      knee: {
+        name: "Knee",
+        desc: "A high-load joint that coordinates leg movement and impact absorption.",
+        reason: "Common reason: overuse, poor alignment, or repetitive stress on tendons."
+      },
+      calf: {
+        name: "Calf",
+        desc: "Gastrocnemius and soleus drive push-off during walking and running.",
+        reason: "Common reason: dehydration, sudden sprinting, or tight posterior chain muscles."
+      }
+    };
+
+    document.querySelectorAll(".voltiva-pain-map").forEach((component) => {
+      const regions = component.querySelectorAll(".region");
+      const infoCard = component.querySelector(".info-card");
+      const infoTitle = component.querySelector(".info-title");
+      const infoDesc = component.querySelector(".info-desc");
+      const infoReason = component.querySelector(".info-reason");
+
+      function activateRegion(region) {
+        regions.forEach((item) => item.classList.toggle("active", item === region));
+      }
+
+      function positionCard(region) {
+        const pad = 12;
+        const gap = 16;
+        const compRect = component.getBoundingClientRect();
+        const zoneRect = region.getBoundingClientRect();
+        const cardRect = infoCard.getBoundingClientRect();
+
+        let x = zoneRect.left - compRect.left + zoneRect.width / 2 - cardRect.width / 2;
+        let y = zoneRect.bottom - compRect.top + gap;
+
+        if (y + cardRect.height > compRect.height - pad) {
+          y = zoneRect.top - compRect.top - cardRect.height - gap;
+        }
+
+        x = Math.max(pad, Math.min(x, compRect.width - cardRect.width - pad));
+        y = Math.max(pad, Math.min(y, compRect.height - cardRect.height - pad));
+
+        infoCard.style.left = x + "px";
+        infoCard.style.top = y + "px";
+      }
+
+      function showInfo(region) {
+        const area = areaInfo[region.dataset.area];
+        if (!area) return;
+
+        infoTitle.textContent = area.name;
+        infoDesc.textContent = area.desc;
+        // Highlighting the 'Common reason' part
+        const reasonParts = area.reason.split(":");
+        if (reasonParts.length > 1) {
+          infoReason.innerHTML = `<strong>${reasonParts[0]}:</strong>${reasonParts[1]}`;
+        } else {
+          infoReason.textContent = area.reason;
+        }
+        
+        infoCard.classList.add("show");
+        infoCard.setAttribute("aria-hidden", "false");
+
+        activateRegion(region);
+        positionCard(region);
+      }
+
+      function hideInfo() {
+        infoCard.classList.remove("show");
+        infoCard.setAttribute("aria-hidden", "true");
+        regions.forEach((item) => item.classList.remove("active"));
+      }
+
+      function clearIfInactive() {
+        requestAnimationFrame(() => {
+          if (component.querySelector(".region:hover")) return;
+          if (component.querySelector(".region:focus")) return;
+          hideInfo();
+        });
+      }
+
+      regions.forEach((region) => {
+        region.addEventListener("mouseenter", () => showInfo(region));
+        region.addEventListener("focus", () => showInfo(region));
+        region.addEventListener("mouseleave", clearIfInactive);
+        region.addEventListener("blur", clearIfInactive);
+
+        region.addEventListener(
+          "pointerdown",
+          (event) => {
+            if (event.pointerType !== "touch") return;
+            event.preventDefault();
+            showInfo(region);
+          },
+          { passive: false }
+        );
+      });
+
+      component.addEventListener("pointerdown", (event) => {
+        if (event.target.closest(".region")) return;
+        hideInfo();
+      });
+
+      window.addEventListener("resize", () => {
+        const active = component.querySelector(".region.active");
+        if (active && infoCard.classList.contains("show")) {
+          positionCard(active);
+        }
+      });
+    });
+  })();
+</script>
+</body>
+</html>
