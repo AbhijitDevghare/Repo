@@ -44,9 +44,30 @@
       box-shadow: 
         0 20px 40px rgba(0, 0, 0, 0.04),
         inset 0 1px 0 rgba(255, 255, 255, 1);
+      width: 100%;
       max-width: 600px;
       margin: 0 auto;
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    }
+
+    @media (max-width: 768px) {
+      .pain-map-section {
+        padding: 5px;
+      }
+      .pain-map-section .anatomy-container {
+        padding: 10px;
+        max-width: 95vw;
+        width: 100%;
+      }
+      .voltiva-pain-map .map {
+        /* Allow the image to take up more vertical space on mobile */
+        aspect-ratio: auto;
+        height: 75vh;
+        max-height: 800px;
+      }
+      .voltiva-pain-map .map img {
+        object-fit: contain;
+      }
     }
 
     .pain-map-section .anatomy-container:hover {
