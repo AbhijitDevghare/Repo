@@ -13,13 +13,14 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
+      min-height: 100vh;
       box-sizing: border-box;
       font-family: 'Inter', "Segoe UI", sans-serif;
       background: radial-gradient(circle at center, #ffffff 0%, #eef0f5 100%);
-      display: grid;
-      place-items: center;
-      min-height: 100vh;
+    }
+
+    body {
+      display: block;
     }
 
     *, *::before, *::after {
@@ -31,7 +32,8 @@
       --text-secondary: #7A5230;
       --text-accent: #8B5E3C;
       width: 100%;
-      padding: 40px 20px;
+      max-width: 100%;
+      padding: 40px 16px;
       opacity: 0;
       animation: fadeSlideIn 0.8s ease forwards;
       perspective: 1000px;
@@ -45,6 +47,7 @@
       grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
       gap: 28px;
       align-items: stretch;
+      overflow: hidden;
     }
 
     .pain-map-section .anatomy-container {
@@ -226,17 +229,20 @@
       }
       .voltiva-pain-map .map {
         aspect-ratio: auto;
-        height: 88vh;
-        height: 88svh;
-        min-height: 80vh;
-        min-height: 80svh;
-        max-height: 90vh;
-        max-height: 90svh;
+        height: 82vh;
+        height: 82svh;
+        min-height: 70vh;
+        min-height: 70svh;
+        max-height: 85vh;
+        max-height: 85svh;
       }
       .voltiva-pain-map .map img,
       .voltiva-pain-map .map svg {
-        transform: translate3d(0, 0, 0) scale(1.03);
-        animation: bodyFloatMobile 6s ease-in-out infinite;
+        width: 100%;
+        max-width: 100%;
+        transform: translateY(0) scale(0.98);
+        transform-origin: center center;
+        animation: bodyFloat 6s ease-in-out infinite;
       }
       .voltiva-pain-map .map svg {
         touch-action: manipulation;
@@ -294,6 +300,8 @@
 
     .voltiva-pain-map .map img,
     .voltiva-pain-map .map svg {
+      width: 100%;
+      max-width: 100%;
       transform: translateY(0) scale(0.98);
       transform-origin: center center;
       animation: bodyFloat 6s ease-in-out infinite;
@@ -347,7 +355,7 @@
       position: absolute;
       left: 0;
       top: 0;
-      width: min(340px, calc(100vw - 32px));
+      width: min(340px, calc(100vw - 24px));
       padding: 18px 20px 16px;
       border-radius: 18px;
       border: 1px solid rgba(255, 255, 255, 0.62);
@@ -491,7 +499,7 @@
 
     @media (hover: none), (pointer: coarse) {
       .voltiva-pain-map .info-card {
-        width: min(360px, calc(100vw - 18px));
+        width: min(340px, calc(100vw - 24px));
         padding: 20px 22px 18px;
         border-radius: 20px;
       }
@@ -542,10 +550,10 @@
 
     @keyframes bodyFloatMobile {
       0%, 100% {
-        transform: translate3d(0, 0, 0) scale(1.03);
+        transform: translate3d(0, 0, 0) scale(1);
       }
       50% {
-        transform: translate3d(0, -8px, 0) scale(1.03);
+        transform: translate3d(0, -8px, 0) scale(1);
       }
     }
 
