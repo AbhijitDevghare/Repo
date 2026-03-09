@@ -570,7 +570,7 @@
     <div class="anatomy-container">
       <section class="voltiva-pain-map">
         <div class="map">
-          <img src="anatomy1.png" alt="Human Anatomy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Anterior_muscles_of_the_human_body.jpg/500px-Anterior_muscles_of_the_human_body.jpg'" />
+          <img src="frontanatomy.png" alt="Human Anatomy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Anterior_muscles_of_the_human_body.jpg/500px-Anterior_muscles_of_the_human_body.jpg'" />
 
           <svg viewBox="0 0 927 1152" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g class="region" data-area="neck" tabindex="0">
@@ -593,8 +593,8 @@
           </g>
 
             <g class="region" data-area="ankle" tabindex="0">
-              <ellipse cx="353" cy="1086" rx="45" ry="28" transform="rotate(-8 353 1086)" />
-              <ellipse cx="574" cy="1086" rx="45" ry="28" transform="rotate(8 574 1086)" />
+              <ellipse cx="353" cy="1050" rx="45" ry="28" transform="rotate(-8 353 1086)" />
+              <ellipse cx="574" cy="1050" rx="45" ry="28" transform="rotate(8 574 1086)" />
             </g>
           </svg>
         </div>
@@ -669,6 +669,62 @@
   </div>
 </section>
 
+<section class="pain-map-section">
+  <div class="pain-map-layout">
+    <div class="anatomy-container">
+      <section class="voltiva-pain-map">
+        <div class="map">
+          <img src="backanatomy.png" alt="Human Back Anatomy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Posterior_muscles_of_human_body.jpg/500px-Posterior_muscles_of_human_body.jpg'" />
+
+          <svg viewBox="0 0 927 1152" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g class="region" data-area="neck-back" tabindex="0">
+              <ellipse cx="463" cy="180" rx="50" ry="50" />
+            </g>
+
+            <g class="region" data-area="lower-back" tabindex="0">
+              <ellipse cx="463" cy="480" rx="80" ry="70" />
+            </g>
+          </svg>
+        </div>
+
+        <div class="info-card" role="status" aria-live="polite" aria-hidden="true">
+          <div class="info-header">
+            <h3 class="info-title"></h3>
+            <span class="info-badge">Pain Zone</span>
+          </div>
+          <p class="info-desc"></p>
+          <p class="info-reason" hidden></p>
+        </div>
+      </section>
+    </div>
+
+    <aside class="pain-content-panel" aria-label="Back pain guidance panel">
+      <div class="panel-hook">
+        <p class="hook-label">Back Pain Focus</p>
+        <h2 class="hook-text">Relief For The Places That Carry Your Daily Load.</h2>
+      </div>
+
+      <div class="panel-list">
+        <article class="panel-item">
+          <span class="panel-icon" aria-hidden="true">N</span>
+          <div>
+            <h3>Neck (Back Cervical)</h3>
+            <p>Relieves tension and stiffness in the cervical muscles caused by posture, stress, or long working hours.</p>
+          </div>
+        </article>
+
+        <article class="panel-item">
+          <span class="panel-icon" aria-hidden="true">L</span>
+          <div>
+            <h3>Lower Back (Lumbar)</h3>
+            <p>Targets deep lumbar muscle pain and stiffness, helping restore comfort and mobility in the lower back.</p>
+          </div>
+        </article>
+      </div>
+    </aside>
+  </div>
+</section>
+
 <script>
   (function initVoltivaPainMap() {
     const areaInfo = {
@@ -691,6 +747,14 @@
       ankle: {
         name: "Ankle",
         desc: "This precision catalyst silences deep-seated discomfort to restore your natural flow and momentum."
+      },
+      "neck-back": {
+        name: "Neck",
+        desc: "Relieves tension and stiffness in the cervical muscles caused by posture, stress, or long working hours."
+      },
+      "lower-back": {
+        name: "Lower Back",
+        desc: "Targets deep lumbar muscle pain and stiffness, helping restore comfort and mobility in the lower back."
       }
     };
 
