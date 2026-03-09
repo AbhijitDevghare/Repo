@@ -13,14 +13,14 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      min-height: 100vh;
+      height: 100%;
+      overflow-x: hidden;
+      overflow-x: clip;
       box-sizing: border-box;
       font-family: 'Inter', "Segoe UI", sans-serif;
       background: radial-gradient(circle at center, #ffffff 0%, #eef0f5 100%);
-    }
-
-    body {
       display: block;
+      min-height: 100vh;
     }
 
     *, *::before, *::after {
@@ -32,8 +32,9 @@
       --text-secondary: #7A5230;
       --text-accent: #8B5E3C;
       width: 100%;
-      max-width: 100%;
-      padding: 40px 16px;
+      padding: 40px 20px;
+      overflow-x: hidden;
+      overflow-x: clip;
       opacity: 0;
       animation: fadeSlideIn 0.8s ease forwards;
       perspective: 1000px;
@@ -42,12 +43,12 @@
     .pain-map-section .pain-map-layout {
       width: 100%;
       max-width: 1180px;
+      min-width: 0;
       margin: 0 auto;
       display: grid;
       grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
       gap: 28px;
       align-items: stretch;
-      overflow: hidden;
     }
 
     .pain-map-section .anatomy-container {
@@ -187,12 +188,31 @@
     }
 
     @media (max-width: 768px) {
+      html, body {
+        overflow-x: hidden;
+      }
+      body {
+        display: block;
+      }
       .pain-map-section {
-        padding: 2px 4px 10px;
+        width: 100%;
+        max-width: 100%;
+        padding: 6px 8px 12px;
+        overflow-x: hidden;
+        overflow-x: clip;
       }
       .pain-map-section .pain-map-layout {
         max-width: 100%;
         gap: 10px;
+      }
+      .pain-map-section .pain-map-layout,
+      .pain-map-section .anatomy-container,
+      .pain-map-section .pain-content-panel,
+      .voltiva-pain-map,
+      .voltiva-pain-map .map {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
       }
       .pain-map-section .anatomy-container {
         order: 1;
@@ -207,8 +227,8 @@
         width: 100%;
         max-width: none;
         margin: 0;
-        padding: 18px 16px;
-        border-radius: 20px;
+        padding: 14px 12px;
+        border-radius: 16px;
       }
       .voltiva-pain-map {
         width: 100%;
@@ -216,10 +236,18 @@
       .pain-map-section .hook-text {
         margin-top: 8px;
         max-width: none;
+        font-size: clamp(18px, 5.6vw, 22px);
       }
       .pain-map-section .panel-item {
         grid-template-columns: 30px minmax(0, 1fr);
         gap: 10px;
+      }
+      .pain-map-section .panel-item h3 {
+        font-size: 14px;
+      }
+      .pain-map-section .panel-item p {
+        font-size: 12px;
+        line-height: 1.45;
       }
       .pain-map-section .panel-icon {
         width: 26px;
@@ -235,14 +263,12 @@
         min-height: 70svh;
         max-height: 85vh;
         max-height: 85svh;
+        overflow: hidden;
       }
       .voltiva-pain-map .map img,
       .voltiva-pain-map .map svg {
-        width: 100%;
-        max-width: 100%;
-        transform: translateY(0) scale(0.98);
-        transform-origin: center center;
-        animation: bodyFloat 6s ease-in-out infinite;
+        transform: translate3d(0, 0, 0) scale(1) !important;
+        animation: bodyFloatMobile 6s ease-in-out infinite !important;
       }
       .voltiva-pain-map .map svg {
         touch-action: manipulation;
@@ -284,6 +310,7 @@
       width: 100%;
       aspect-ratio: 927 / 1152;
       line-height: 0;
+      overflow: hidden;
     }
 
     .voltiva-pain-map .map img {
@@ -300,8 +327,6 @@
 
     .voltiva-pain-map .map img,
     .voltiva-pain-map .map svg {
-      width: 100%;
-      max-width: 100%;
       transform: translateY(0) scale(0.98);
       transform-origin: center center;
       animation: bodyFloat 6s ease-in-out infinite;
@@ -312,7 +337,7 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      overflow: visible;
+      overflow: hidden;
       z-index: 2;
     }
 
@@ -355,7 +380,7 @@
       position: absolute;
       left: 0;
       top: 0;
-      width: min(340px, calc(100vw - 24px));
+      width: min(340px, calc(100% - 20px));
       padding: 18px 20px 16px;
       border-radius: 18px;
       border: 1px solid rgba(255, 255, 255, 0.62);
@@ -499,8 +524,8 @@
 
     @media (hover: none), (pointer: coarse) {
       .voltiva-pain-map .info-card {
-        width: min(340px, calc(100vw - 24px));
-        padding: 20px 22px 18px;
+        width: min(300px, calc(100% - 12px));
+        padding: 16px 16px 14px;
         border-radius: 20px;
       }
 
@@ -578,7 +603,7 @@
     <div class="anatomy-container">
       <section class="voltiva-pain-map">
         <div class="map">
-          <img src="frontanatomy.png" alt="Human Anatomy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Anterior_muscles_of_the_human_body.jpg/500px-Anterior_muscles_of_the_human_body.jpg'" />
+          <img src="anatomy.png" alt="Human Anatomy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Anterior_muscles_of_the_human_body.jpg/500px-Anterior_muscles_of_the_human_body.jpg'" />
 
           <svg viewBox="0 0 927 1152" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g class="region" data-area="neck" tabindex="0">
@@ -601,8 +626,8 @@
           </g>
 
             <g class="region" data-area="ankle" tabindex="0">
-              <ellipse cx="353" cy="1050" rx="45" ry="28" transform="rotate(-8 353 1086)" />
-              <ellipse cx="574" cy="1050" rx="45" ry="28" transform="rotate(8 574 1086)" />
+              <ellipse cx="353" cy="1086" rx="45" ry="28" transform="rotate(-8 353 1086)" />
+              <ellipse cx="574" cy="1086" rx="45" ry="28" transform="rotate(8 574 1086)" />
             </g>
           </svg>
         </div>
@@ -686,11 +711,11 @@
 
           <svg viewBox="0 0 927 1152" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g class="region" data-area="neck-back" tabindex="0">
-              <ellipse cx="463" cy="180" rx="50" ry="50" />
+              <ellipse cx="463" cy="200" rx="50" ry="65" />
             </g>
 
             <g class="region" data-area="lower-back" tabindex="0">
-              <ellipse cx="463" cy="480" rx="80" ry="70" />
+              <ellipse cx="463" cy="660" rx="95" ry="75" />
             </g>
           </svg>
         </div>
