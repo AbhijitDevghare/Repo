@@ -315,12 +315,10 @@
     }
 
     .voltiva-pain-map .region > * {
-      fill: var(--pain-fill);
-      stroke: var(--pain-stroke);
+      fill: rgba(239, 68, 68, 0);
+      stroke: rgba(239, 68, 68, 0);
       stroke-width: 2.5;
-      filter:
-        drop-shadow(0 0 5px rgba(239, 68, 68, 0.28))
-        drop-shadow(0 0 12px rgba(239, 68, 68, 0.12));
+      filter: none;
       pointer-events: all;
       transition: fill 0.26s ease, stroke 0.26s ease, filter 0.26s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -572,7 +570,7 @@
     <div class="anatomy-container">
       <section class="voltiva-pain-map">
         <div class="map">
-          <img src="anatomy.png" alt="Human Anatomy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Anterior_muscles_of_the_human_body.jpg/500px-Anterior_muscles_of_the_human_body.jpg'" />
+          <img src="anatomy1.png" alt="Human Anatomy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Anterior_muscles_of_the_human_body.jpg/500px-Anterior_muscles_of_the_human_body.jpg'" />
 
           <svg viewBox="0 0 927 1152" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g class="region" data-area="neck" tabindex="0">
