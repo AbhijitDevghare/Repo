@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+
     /* Global Reset & Base */
     html, body {
       margin: 0;
@@ -95,45 +96,19 @@
       pointer-events: none;
     }
 
-    .pain-map-section .hook-label {
-      margin: 0;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
-      color: var(--text-accent);
-    }
-
-    .pain-map-section .hook-text {
-      margin: 10px 0 0 0;
-      font-size: clamp(22px, 2.5vw, 30px);
-      line-height: 1.2;
-      letter-spacing: -0.5px;
-      color: var(--text-primary);
-      max-width: 18ch;
-    }
-
-    .pain-map-section .panel-hook {
-      position: relative;
-      z-index: 1;
-      margin-bottom: 18px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid rgba(122, 82, 48, 0.18);
-    }
-
     .pain-map-section .panel-list {
       position: relative;
       z-index: 1;
       display: grid;
-      gap: 12px;
+      gap: 16px;
     }
 
     .pain-map-section .panel-item {
       display: grid;
-      grid-template-columns: 34px minmax(0, 1fr);
-      gap: 12px;
+      grid-template-columns: 10px minmax(0, 1fr);
+      gap: 14px;
       align-items: start;
-      padding-top: 10px;
+      padding-top: 12px;
     }
 
     .pain-map-section .panel-item:first-child {
@@ -145,17 +120,13 @@
     }
 
     .pain-map-section .panel-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, rgba(139, 94, 60, 0.24), rgba(122, 82, 48, 0.16));
-      border: 1px solid rgba(139, 94, 60, 0.26);
-      color: var(--text-accent);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-      display: grid;
-      place-items: center;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-accent);
+      box-shadow: 0 0 0 4px rgba(139, 94, 60, 0.15);
+      margin-top: 5px;
+      display: block;
       user-select: none;
     }
 
@@ -233,14 +204,9 @@
       .voltiva-pain-map {
         width: 100%;
       }
-      .pain-map-section .hook-text {
-        margin-top: 8px;
-        max-width: none;
-        font-size: clamp(18px, 5.6vw, 22px);
-      }
       .pain-map-section .panel-item {
-        grid-template-columns: 30px minmax(0, 1fr);
-        gap: 10px;
+        grid-template-columns: 8px minmax(0, 1fr);
+        gap: 12px;
       }
       .pain-map-section .panel-item h3 {
         font-size: 14px;
@@ -250,10 +216,10 @@
         line-height: 1.45;
       }
       .pain-map-section .panel-icon {
-        width: 26px;
-        height: 26px;
-        border-radius: 8px;
-        font-size: 10px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-top: 4px;
       }
       .voltiva-pain-map .map {
         aspect-ratio: 854 / 1280;
@@ -600,7 +566,7 @@
     <div class="anatomy-container">
       <section class="voltiva-pain-map">
         <div class="map">
-          <img src="anotomy3d.jpeg" alt="Human back anatomy with highlighted pain joints" />
+          <img src="https://res.cloudinary.com/dorfg8nqt/image/upload/v1773140199/Anirudh/anotomy3d_wim9dj.jpg" alt="Human back anatomy with highlighted pain joints" />
 
           <svg viewBox="0 0 854 1280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g class="region" data-area="neck" tabindex="0">
@@ -645,14 +611,9 @@
     </div>
 
     <aside class="pain-content-panel" aria-label="Pain guidance panel">
-      <div class="panel-hook">
-        <p class="hook-label">Short Emotional Hook</p>
-        <h2 class="hook-text">Because Pain Shouldn&rsquo;t Cost You the Moments That Matter.</h2>
-      </div>
-
       <div class="panel-list">
         <article class="panel-item">
-          <span class="panel-icon" aria-hidden="true">N/S</span>
+          <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Neck &amp; Shoulders</h3>
             <p>For the tension that builds up after a long day at the desk or a stressful commute.</p>
@@ -660,7 +621,7 @@
         </article>
 
         <article class="panel-item">
-          <span class="panel-icon" aria-hidden="true">B</span>
+          <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Back Pain</h3>
             <p>Solid support for your body&rsquo;s core so you can bend, reach, and move again.</p>
@@ -668,7 +629,7 @@
         </article>
 
         <article class="panel-item">
-          <span class="panel-icon" aria-hidden="true">J/K</span>
+          <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Joints &amp; Knees</h3>
             <p>Don't let stiffness keep you on the sidelines. Stay active and keep up with the people you love.</p>
@@ -676,7 +637,7 @@
         </article>
 
         <article class="panel-item">
-          <span class="panel-icon" aria-hidden="true">S</span>
+          <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Sports &amp; Strains</h3>
             <p>Whether it&rsquo;s a sudden sprain or a post-workout ache, get back to your peak performance sooner.</p>
@@ -684,7 +645,7 @@
         </article>
 
         <article class="panel-item">
-          <span class="panel-icon" aria-hidden="true">A/W</span>
+          <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Ankle &amp; Wrist</h3>
             <p>This precision catalyst silences deep-seated discomfort to restore your natural flow and momentum.</p>
@@ -692,7 +653,7 @@
         </article>
 
         <article class="panel-item">
-          <span class="panel-icon" aria-hidden="true">F</span>
+          <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Body aches due to overuse or fatigue</h3>
             <p>Our 2X strength formula sinks in deep to instantly silence total-body tension so you can reclaim your day.</p>
