@@ -96,6 +96,27 @@
       pointer-events: none;
     }
 
+    .pain-map-section .hook-label {
+      display: none;
+    }
+
+    .pain-map-section .hook-text {
+      margin: 0;
+      font-size: clamp(22px, 2.5vw, 30px);
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      max-width: 18ch;
+    }
+
+    .pain-map-section .panel-hook {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 18px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(122, 82, 48, 0.18);
+    }
+
     .pain-map-section .panel-list {
       position: relative;
       z-index: 1;
@@ -105,10 +126,10 @@
 
     .pain-map-section .panel-item {
       display: grid;
-      grid-template-columns: 10px minmax(0, 1fr);
+      grid-template-columns: 12px minmax(0, 1fr);
       gap: 14px;
       align-items: start;
-      padding-top: 12px;
+      padding-top: 10px;
     }
 
     .pain-map-section .panel-item:first-child {
@@ -117,6 +138,7 @@
 
     .pain-map-section .panel-item + .panel-item {
       border-top: 1px solid rgba(122, 82, 48, 0.14);
+      padding-top: 14px;
     }
 
     .pain-map-section .panel-icon {
@@ -127,7 +149,6 @@
       box-shadow: 0 0 0 4px rgba(139, 94, 60, 0.15);
       margin-top: 5px;
       display: block;
-      user-select: none;
     }
 
     .pain-map-section .panel-item h3 {
@@ -204,8 +225,13 @@
       .voltiva-pain-map {
         width: 100%;
       }
+      .pain-map-section .hook-text {
+        margin-top: 0;
+        max-width: none;
+        font-size: clamp(18px, 5.6vw, 22px);
+      }
       .pain-map-section .panel-item {
-        grid-template-columns: 8px minmax(0, 1fr);
+        grid-template-columns: 10px minmax(0, 1fr);
         gap: 12px;
       }
       .pain-map-section .panel-item h3 {
@@ -218,7 +244,6 @@
       .pain-map-section .panel-icon {
         width: 8px;
         height: 8px;
-        border-radius: 50%;
         margin-top: 4px;
       }
       .voltiva-pain-map .map {
@@ -611,6 +636,10 @@
     </div>
 
     <aside class="pain-content-panel" aria-label="Pain guidance panel">
+      <div class="panel-hook">
+        <h2 class="hook-text">Because pain shouldn&rsquo;t cost you the moments that matter.</h2>
+      </div>
+
       <div class="panel-list">
         <article class="panel-item">
           <span class="panel-icon" aria-hidden="true"></span>
