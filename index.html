@@ -256,13 +256,10 @@
         font-size: 10px;
       }
       .voltiva-pain-map .map {
-        aspect-ratio: auto;
-        height: 82vh;
-        height: 82svh;
-        min-height: 70vh;
-        min-height: 70svh;
-        max-height: 85vh;
-        max-height: 85svh;
+        aspect-ratio: 854 / 1280;
+        height: auto;
+        min-height: 0;
+        max-height: none;
         overflow: hidden;
       }
       .voltiva-pain-map .map img,
@@ -308,7 +305,7 @@
     .voltiva-pain-map .map {
       position: relative;
       width: 100%;
-      aspect-ratio: 927 / 1152;
+      aspect-ratio: 854 / 1280;
       line-height: 0;
       overflow: hidden;
     }
@@ -603,31 +600,35 @@
     <div class="anatomy-container">
       <section class="voltiva-pain-map">
         <div class="map">
-          <img src="frontanatomy.png" alt="Human Anatomy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Anterior_muscles_of_the_human_body.jpg/500px-Anterior_muscles_of_the_human_body.jpg'" />
+          <img src="anotomy3d.jpeg" alt="Human back anatomy with highlighted pain joints" />
 
-          <svg viewBox="0 0 927 1152" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <svg viewBox="0 0 854 1280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <g class="region" data-area="neck" tabindex="0">
-              <ellipse cx="463.5" cy="215" rx="48" ry="60" />
+              <ellipse cx="378" cy="210" rx="40" ry="40" transform="rotate(-10 378 215)" />
             </g>
 
             <g class="region" data-area="shoulder" tabindex="0">
-              <ellipse cx="320" cy="260" rx="80" ry="70" />
-              <ellipse cx="590" cy="260" rx="80" ry="70" />
+              <ellipse cx="474" cy="260" rx="52" ry="54" />
+            </g>
+
+            <g class="region" data-area="elbow" tabindex="0">
+              <ellipse cx="559" cy="419" rx="42" ry="40" />
+            </g>
+
+            <g class="region" data-area="wrist" tabindex="0">
+              <ellipse cx="634" cy="566" rx="36" ry="34" transform="rotate(16 634 566)" />
+            </g>
+
+            <g class="region" data-area="lower-back" tabindex="0">
+              <ellipse cx="386" cy="500" rx="46" ry="48" />
             </g>
 
             <g class="region" data-area="knee" tabindex="0">
-              <ellipse cx="379" cy="804" rx="55" ry="46" />
-              <ellipse cx="548" cy="804" rx="55" ry="46" />
+              <ellipse cx="495" cy="794" rx="48" ry="46" />
             </g>
 
-           <g class="region" data-area="wrist" tabindex="0">
-              <ellipse cx="250" cy="540" rx="35" ry="22" transform="rotate(12 187 626)" />
-              <ellipse cx="690" cy="540" rx="35" ry="22" transform="rotate(-12 720 626)" />
-          </g>
-
             <g class="region" data-area="ankle" tabindex="0">
-              <ellipse cx="353" cy="1050" rx="45" ry="28" transform="rotate(-8 353 1086)" />
-              <ellipse cx="574" cy="1050" rx="45" ry="28" transform="rotate(8 574 1086)" />
+              <ellipse cx="487" cy="1067" rx="42" ry="38" />
             </g>
           </svg>
         </div>
@@ -702,62 +703,6 @@
   </div>
 </section>
 
-<section class="pain-map-section">
-  <div class="pain-map-layout">
-    <div class="anatomy-container">
-      <section class="voltiva-pain-map">
-        <div class="map">
-          <img src="backanatomy.png" alt="Human Back Anatomy" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Posterior_muscles_of_human_body.jpg/500px-Posterior_muscles_of_human_body.jpg'" />
-
-          <svg viewBox="0 0 927 1152" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <g class="region" data-area="neck-back" tabindex="0">
-              <ellipse cx="463" cy="130" rx="45" ry="60" />
-            </g>
-
-            <g class="region" data-area="lower-back" tabindex="0">
-              <ellipse cx="463" cy="460" rx="80" ry="70" />
-            </g>
-          </svg>
-        </div>
-
-        <div class="info-card" role="status" aria-live="polite" aria-hidden="true">
-          <div class="info-header">
-            <h3 class="info-title"></h3>
-            <span class="info-badge">Pain Zone</span>
-          </div>
-          <p class="info-desc"></p>
-          <p class="info-reason" hidden></p>
-        </div>
-      </section>
-    </div>
-
-    <aside class="pain-content-panel" aria-label="Back pain guidance panel">
-      <div class="panel-hook">
-        <p class="hook-label">Back Pain Focus</p>
-        <h2 class="hook-text">Relief For The Places That Carry Your Daily Load.</h2>
-      </div>
-
-      <div class="panel-list">
-        <article class="panel-item">
-          <span class="panel-icon" aria-hidden="true">N</span>
-          <div>
-            <h3>Neck (Back Cervical)</h3>
-            <p>Relieves tension and stiffness in the cervical muscles caused by posture, stress, or long working hours.</p>
-          </div>
-        </article>
-
-        <article class="panel-item">
-          <span class="panel-icon" aria-hidden="true">L</span>
-          <div>
-            <h3>Lower Back (Lumbar)</h3>
-            <p>Targets deep lumbar muscle pain and stiffness, helping restore comfort and mobility in the lower back.</p>
-          </div>
-        </article>
-      </div>
-    </aside>
-  </div>
-</section>
-
 <script>
   (function initVoltivaPainMap() {
     const areaInfo = {
@@ -768,6 +713,10 @@
       shoulder: {
         name: "Shoulder",
         desc: "For the tension that builds up after a long day at the desk or a stressful commute."
+      },
+      elbow: {
+        name: "Elbow",
+        desc: "Helps calm repetitive strain around the elbow joint from lifting, typing, or overuse."
       },
       knee: {
         name: "Knee",
@@ -780,10 +729,6 @@
       ankle: {
         name: "Ankle",
         desc: "This precision catalyst silences deep-seated discomfort to restore your natural flow and momentum."
-      },
-      "neck-back": {
-        name: "Neck",
-        desc: "Relieves tension and stiffness in the cervical muscles caused by posture, stress, or long working hours."
       },
       "lower-back": {
         name: "Lower Back",
