@@ -130,6 +130,8 @@
       gap: 14px;
       align-items: start;
       padding-top: 10px;
+      border-radius: 14px;
+      transition: background-color 0.24s ease, box-shadow 0.24s ease;
     }
 
     .pain-map-section .panel-item:first-child {
@@ -141,6 +143,11 @@
       padding-top: 14px;
     }
 
+    .pain-map-section .panel-item.active {
+      background: rgba(255, 255, 255, 0.55);
+      box-shadow: inset 0 0 0 1px rgba(139, 94, 60, 0.16);
+    }
+
     .pain-map-section .panel-icon {
       width: 10px;
       height: 10px;
@@ -149,6 +156,14 @@
       box-shadow: 0 0 0 4px rgba(139, 94, 60, 0.15);
       margin-top: 5px;
       display: block;
+      transition: background-color 0.24s ease, box-shadow 0.24s ease;
+    }
+
+    .pain-map-section .panel-item.active .panel-icon {
+      background: rgba(239, 68, 68, 0.95);
+      box-shadow:
+        0 0 0 4px rgba(239, 68, 68, 0.2),
+        0 0 14px rgba(239, 68, 68, 0.35);
     }
 
     .pain-map-section .panel-item h3 {
@@ -641,7 +656,7 @@
       </div>
 
       <div class="panel-list">
-        <article class="panel-item">
+        <article class="panel-item" data-area="neck shoulder">
           <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Neck &amp; Shoulders</h3>
@@ -649,7 +664,7 @@
           </div>
         </article>
 
-        <article class="panel-item">
+        <article class="panel-item" data-area="lower-back">
           <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Back Pain</h3>
@@ -657,7 +672,7 @@
           </div>
         </article>
 
-        <article class="panel-item">
+        <article class="panel-item" data-area="knee">
           <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Joints &amp; Knees</h3>
@@ -665,7 +680,7 @@
           </div>
         </article>
 
-        <article class="panel-item">
+        <article class="panel-item" data-area="elbow">
           <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Sports &amp; Strains</h3>
@@ -673,7 +688,7 @@
           </div>
         </article>
 
-        <article class="panel-item">
+        <article class="panel-item" data-area="ankle wrist">
           <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Ankle &amp; Wrist</h3>
@@ -681,7 +696,7 @@
           </div>
         </article>
 
-        <article class="panel-item">
+        <article class="panel-item" data-area="lower-back neck shoulder elbow knee ankle wrist">
           <span class="panel-icon" aria-hidden="true"></span>
           <div>
             <h3>Body aches due to overuse or fatigue</h3>
@@ -727,13 +742,66 @@
     };
 
     document.querySelectorAll(".voltiva-pain-map").forEach((component) => {
-      const regions = component.querySelectorAll(".region");
+      const regions = Array.from(component.querySelectorAll(".region"));
       const infoCard = component.querySelector(".info-card");
       const infoTitle = component.querySelector(".info-title");
       const infoDesc = component.querySelector(".info-desc");
+      const mapLayout = component.closest(".pain-map-layout");
+      const panelItems = mapLayout
+        ? Array.from(mapLayout.querySelectorAll(".panel-item[data-area]"))
+        : [];
+      const regionByArea = new Map(regions.map((region) => [region.dataset.area, region]));
+      let currentAnchorRegion = null;
 
-      function activateRegion(region) {
-        regions.forEach((item) => item.classList.toggle("active", item === region));
+      function parseAreaKeys(value) {
+        return (value || "")
+          .split(/[\s,]+/)
+          .map((key) => key.trim())
+          .filter(Boolean);
+      }
+
+      const panelMeta = panelItems.map((item, index) => {
+        const areaKeys = parseAreaKeys(item.dataset.area).filter((areaKey) =>
+          regionByArea.has(areaKey)
+        );
+        const linkedRegions = areaKeys
+          .map((areaKey) => regionByArea.get(areaKey))
+          .filter(Boolean);
+        const anchorAreaKey = areaKeys.includes("lower-back") ? "lower-back" : areaKeys[0];
+        const heading = item.querySelector("h3");
+        const desc = item.querySelector("p");
+
+        return {
+          item,
+          index,
+          areaKeys,
+          linkedRegions,
+          anchorRegion: regionByArea.get(anchorAreaKey) || linkedRegions[0] || null,
+          title: heading ? heading.textContent.trim() : "",
+          desc: desc ? desc.textContent.trim() : ""
+        };
+      });
+
+      const panelMetaByItem = new Map(panelMeta.map((meta) => [meta.item, meta]));
+      const panelMetaByArea = new Map();
+
+      Object.keys(areaInfo).forEach((areaKey) => {
+        const preferredPanel = panelMeta
+          .filter((meta) => meta.areaKeys.includes(areaKey))
+          .sort((a, b) => a.areaKeys.length - b.areaKeys.length || a.index - b.index)[0];
+
+        if (preferredPanel) {
+          panelMetaByArea.set(areaKey, preferredPanel);
+        }
+      });
+
+      function activateRegions(activeRegions) {
+        const activeSet = new Set(activeRegions);
+        regions.forEach((item) => item.classList.toggle("active", activeSet.has(item)));
+      }
+
+      function activatePanelItem(activePanel) {
+        panelItems.forEach((item) => item.classList.toggle("active", item === activePanel));
       }
 
       function positionCard(region) {
@@ -804,37 +872,69 @@
         infoCard.style.top = y + "px";
       }
 
-      function showInfo(region) {
-        const area = areaInfo[region.dataset.area];
-        if (!area) return;
+      function showInfoWithState(state) {
+        if (!state.anchorRegion) return;
 
-        infoTitle.textContent = area.name;
-        infoDesc.textContent = area.desc;
-        
-        activateRegion(region);
-        positionCard(region);
-
+        infoTitle.textContent = state.title || "";
+        infoDesc.textContent = state.desc || "";
+        activateRegions(state.activeRegions || []);
+        activatePanelItem(state.activePanel || null);
+        positionCard(state.anchorRegion);
+        currentAnchorRegion = state.anchorRegion;
         infoCard.classList.add("show");
         infoCard.setAttribute("aria-hidden", "false");
+      }
+
+      function showInfoForRegion(region) {
+        const areaKey = region.dataset.area;
+        const area = areaInfo[areaKey];
+        if (!area) return;
+
+        const matchingPanel = panelMetaByArea.get(areaKey);
+        showInfoWithState({
+          title: area.name,
+          desc: area.desc,
+          activeRegions: [region],
+          anchorRegion: region,
+          activePanel: matchingPanel ? matchingPanel.item : null
+        });
+      }
+
+      function showInfoForPanel(panelItem) {
+        const meta = panelMetaByItem.get(panelItem);
+        if (!meta || meta.linkedRegions.length === 0) return;
+
+        const firstArea = areaInfo[meta.areaKeys[0]] || {};
+        showInfoWithState({
+          title: meta.title || firstArea.name || "",
+          desc: meta.desc || firstArea.desc || "",
+          activeRegions: meta.linkedRegions,
+          anchorRegion: meta.anchorRegion,
+          activePanel: panelItem
+        });
       }
 
       function hideInfo() {
         infoCard.classList.remove("show");
         infoCard.setAttribute("aria-hidden", "true");
-        regions.forEach((item) => item.classList.remove("active"));
+        activateRegions([]);
+        activatePanelItem(null);
+        currentAnchorRegion = null;
       }
 
       function clearIfInactive() {
         requestAnimationFrame(() => {
           if (component.querySelector(".region:hover")) return;
           if (component.querySelector(".region:focus")) return;
+          if (mapLayout && mapLayout.querySelector(".panel-item:hover")) return;
+          if (mapLayout && mapLayout.querySelector(".panel-item:focus-within")) return;
           hideInfo();
         });
       }
 
       regions.forEach((region) => {
-        region.addEventListener("mouseenter", () => showInfo(region));
-        region.addEventListener("focus", () => showInfo(region));
+        region.addEventListener("mouseenter", () => showInfoForRegion(region));
+        region.addEventListener("focus", () => showInfoForRegion(region));
         region.addEventListener("mouseleave", clearIfInactive);
         region.addEventListener("blur", clearIfInactive);
 
@@ -843,10 +943,15 @@
           (event) => {
             if (event.pointerType !== "touch") return;
             event.preventDefault();
-            showInfo(region);
+            showInfoForRegion(region);
           },
           { passive: false }
         );
+      });
+
+      panelItems.forEach((item) => {
+        item.addEventListener("mouseenter", () => showInfoForPanel(item));
+        item.addEventListener("mouseleave", clearIfInactive);
       });
 
       component.addEventListener("pointerdown", (event) => {
@@ -855,9 +960,8 @@
       });
 
       window.addEventListener("resize", () => {
-        const active = component.querySelector(".region.active");
-        if (active && infoCard.classList.contains("show")) {
-          positionCard(active);
+        if (currentAnchorRegion && infoCard.classList.contains("show")) {
+          positionCard(currentAnchorRegion);
         }
       });
     });
